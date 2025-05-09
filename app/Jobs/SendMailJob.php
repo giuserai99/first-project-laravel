@@ -23,11 +23,11 @@ class SendMailJob implements ShouldQueue {
         $email = Mail::with('addresses')->where('id',$this->mailId)->first();
 
         //dd($email->addresses);
-        $receivers = $email->addresses->map(function ($receiver) {
-            return $receiver->email_to;
+        $recipients = $email->addresses->map(function ($recipient) {
+            return $recipient->email_to;
         });
         //dd($addresses);
-        dump('Id: ' . $email->id . ' subject: ' . $email->subject . ' body: ' . $email->body . ' receivers: ' . $receivers);
+        dump('Id: ' . $email->id . ' subject: ' . $email->subject . ' body: ' . $email->body . ' receivers: ' . $recipients);
     }
 }
 

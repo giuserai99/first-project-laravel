@@ -27,7 +27,7 @@ class MailService
      * @param CreateMailDTO $data
      * @return Mail
      */
-    public function send(CreateMailDTO $data) :Mail
+    public function send(CreateMailDTO $data): Mail
     {
         $mail = DB::transaction(function () use ($data) {
             $mail = Mail::create([
@@ -58,7 +58,7 @@ class MailService
      *
      * @return Collection
      */
-    public function showAllMail() :Collection
+    public function getAll() :Collection
     {
         return Mail::all();
     }
@@ -69,7 +69,7 @@ class MailService
      * @param integer $id
      * @return Mail
      */
-    public function getMail(int $id) :Mail
+    public function getOne(int $id): Mail
     {
         return Mail::findOrFail($id);
     }
@@ -80,8 +80,9 @@ class MailService
      * @param Mail $mail
      * @return void
      */
-    public function deleteMail(Mail $mail) :void
+    public function deleteOne(int $id): void
     {
+        $mail = Mail::FindOrFail($id);
         $mail->delete();
     }
 
@@ -91,7 +92,7 @@ class MailService
      * @param UpdateMailDTO $data
      * @return void
      */
-    public function updateMail(UpdateMailDTO $data) :void
+    public function updateOne(UpdateMailDTO $data): void
     {
         $mailUpdate = Mail::where('id', $data->id)->update([
             'subject' => $data->subject,

@@ -9,8 +9,10 @@ use App\Services\MailService;
 use Illuminate\Http\Request;
 use App\DTO\CreateMailDTO;
 use App\DTO\UpdateMailDTO;
+use App\Http\Requests\UpdateMailRequest;
 use App\Http\Resources\MailCollection;
 use App\Http\Resources\MailResource;
+use App\Http\Resources\MailResourceCollection;
 use App\Models\Mail;
 
 class MailController extends Controller
@@ -31,31 +33,30 @@ class MailController extends Controller
         return new MailResource($this->mailService->send($mailDTO));
     }
 
-    public function showAllMail()
+    public function getAll()
     {
-        return new MailCollection($this->mailService->showAllMail());
+        return new MailResourceCollection($this->mailService->getAll());
     }
 
     public function getMail(int $id)
     {
-        return new MailResource($this->mailService->getMail($id));
+        return new MailResource($this->mailService->getOne($id));
     }
 
     public function deleteMail(int $id)
     {
-
-        $this->mailService->deleteMail(Mail::FindOrFail($id));
-        return 'No content';
+        $this->mailService->deleteOne($id);
+        return response()->noContent();
     }
 
-    public function updateMail(int $id, Request $request)
+    public function updateMail(UpdateMailRequest $request)
     {
         $mailDTO = new UpdateMailDTO(
-            $id = $id,
+            $request->route('id'),
             $request->input('subject'),
             $request->input('body')
         );
-        $this->mailService->updateMail($mailDTO);
-        return 'Updated';
+        $this->mailService->updateOne($mailDTO);
+        return response()->noContent();
     }
 }

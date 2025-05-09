@@ -4,8 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-
-class SendMailRequest extends FormRequest
+class UpdateMailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +22,7 @@ class SendMailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'emailsTo' => 'required|array',
-            'emailsTo.*' => 'email',
-            'subject' => 'required',
-            'body' => 'required'
+            //
         ];
     }
 }
