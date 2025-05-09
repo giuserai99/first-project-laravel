@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/emails/send', [MailController::class, 'sendMail']);
 
-Route::get('/emails', [MailController::class, 'showAllMail']);
+Route::get('/emails', [MailController::class, 'getAll']);
 
 Route::get('/email/{id}', [MailController::class, 'getMail']);
 
