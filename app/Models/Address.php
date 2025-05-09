@@ -12,7 +12,8 @@ class Address extends Model
 
     protected $fillable = ['email', 'name'];
 
-    public function mail(): BelongsTo{
+    public function mail(): BelongsTo
+    {
         return $this->belongsTo(Mail::class);
     }
 }

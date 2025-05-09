@@ -2,7 +2,8 @@
 
 namespace App\DTO;
 
-class CreateMailDTO {
+class CreateMailDTO
+{
     public function __construct(
         public array $emailsTo,
         public string $subject,

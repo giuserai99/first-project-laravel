@@ -13,7 +13,8 @@ class Mail extends Model
     protected $fillable = ['subject', 'body'];
 
 
-    public function addresses() :HasMany{
+    public function addresses(): HasMany
+    {
         return $this->hasMany(Address::class);
     }
 }

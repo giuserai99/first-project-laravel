@@ -12,7 +12,8 @@ use Illuminate\Queue\SerializesModels;
 
 use function PHPSTORM_META\map;
 
-class SendMailJob implements ShouldQueue {
+class SendMailJob implements ShouldQueue
+{
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(private int $mailId) {}
@@ -20,7 +21,7 @@ class SendMailJob implements ShouldQueue {
     public function handle()
     {
 
-        $email = Mail::with('addresses')->where('id',$this->mailId)->first();
+        $email = Mail::with('addresses')->where('id', $this->mailId)->first();
 
         //dd($email->addresses);
         $recipients = $email->addresses->map(function ($recipient) {
@@ -30,7 +31,3 @@ class SendMailJob implements ShouldQueue {
         dump('Id: ' . $email->id . ' subject: ' . $email->subject . ' body: ' . $email->body . ' receivers: ' . $recipients);
     }
 }
-
-
-
-

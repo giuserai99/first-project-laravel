@@ -19,7 +19,7 @@ class MailService
      * Create a new class instance.
      */
     public function __construct() {}
-    
+
     /**
      * Funzione che crea una nuova mail e associa degli addresses.
      * Infine dispatch SendMailJob
@@ -58,7 +58,7 @@ class MailService
      *
      * @return Collection
      */
-    public function getAll() :Collection
+    public function getAll(): Collection
     {
         return Mail::all();
     }
