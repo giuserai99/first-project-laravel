@@ -9,6 +9,7 @@ use App\DTO\CreateMailDTO;
 use App\DTO\UpdateMailDTO;
 use App\Models\Address;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -18,10 +19,17 @@ class MailService
      * Create a new class instance.
      */
     public function __construct() {}
-
-    public function send(CreateMailDTO $data)
+    
+    /**
+     * Funzione che crea una nuova mail e associa degli addresses.
+     * Infine dispatch SendMailJob
+     *
+     * @param CreateMailDTO $data
+     * @return Mail
+     */
+    public function send(CreateMailDTO $data) :Mail
     {
-        return DB::transaction(function () use ($data) {
+        $mail = DB::transaction(function () use ($data) {
             $mail = Mail::create([
                 'subject' => $data->subject,
                 'body' => $data->body
@@ -35,60 +43,59 @@ class MailService
                 ];
             }, $data->emailsTo));
 
-            $sendMailJob = new SendMailJob($mail->id);
-            dispatch($sendMailJob);
-
             return $mail;
         });
+
+
+        $sendMailJob = new SendMailJob($mail->id);
+        dispatch($sendMailJob);
+
+        return $mail;
     }
 
-    public function showAllMail()
+    /**
+     * Funzione che ritorna tutte le mails
+     *
+     * @return Collection
+     */
+    public function showAllMail() :Collection
     {
-        $mails = Mail::all();
-
-        if ($mails === null)
-            return new Response('Mails not found', 404);
-        return new Response($mails, 200);
+        return Mail::all();
     }
 
-    public function getMail(int $id)
+    /**
+     * Funzione che ritorna una mail singola
+     *
+     * @param integer $id
+     * @return Mail
+     */
+    public function getMail(int $id) :Mail
     {
-        $mail = Mail::find($id);
-        if ($mail === null)
-            return new Response('Id not found', 404);
-
-        // if ($mail->delete_at !== null)
-        //     return new Response('Id not found', 404);
-        return new Response($mail, 200);
+        return Mail::findOrFail($id);
     }
 
-    public function deleteMail(int $id)
+    /**
+     * Funzione che elimina una mail
+     *
+     * @param Mail $mail
+     * @return void
+     */
+    public function deleteMail(Mail $mail) :void
     {
-        $mail = Mail::find($id);
-        if ($mail === null)
-            return new Response('Id not found', 404);
-
-        // if ($mail->delete_at !== null)
-        //     return new Response('Id not found', 404);
-        Mail::destroy($id);
-        return new Response('', 204);
+        $mail->delete();
     }
 
-    public function updateMail(int $id, UpdateMailDTO $data)
+    /**
+     * Funzione che aggiorna una mail
+     *
+     * @param UpdateMailDTO $data
+     * @return void
+     */
+    public function updateMail(UpdateMailDTO $data) :void
     {
-        $mail = Mail::find($id);
-        if ($mail === null)
-            return new Response('Id not found', 404);
-
-        // if ($mail->delete_at !== null)
-        //     return new Response('Id not found', 404);
-
-        return DB::transaction(function () use ($id, $data) {
-            Mail::where('id', $id)->update([
-                'subject' => $data->subject,
-                'body' => $data->body
-            ]);
-            return new Response('Updated', 200);
-        });
+        $mailUpdate = Mail::where('id', $data->id)->update([
+            'subject' => $data->subject,
+            'body' => $data->body
+        ]);
     }
 }
